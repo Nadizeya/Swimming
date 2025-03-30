@@ -1,5 +1,5 @@
-import Icon from "@/components/Icon";
-import Logo from "@/components/logo";
+import Icon from "@/shared/Icon";
+import Logo from "@/shared/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -20,8 +20,8 @@ const SearchBar = () => {
 
 export default function Header() {
   return (
-    <header className="h-20  flex pt-6 px-4 justify-between bg-transparent">
-      <Logo src="/assets/logo.png" className="w-44" />
+    <header className="h-20 pt-6 px-4 flex justify-end bg-transparent">
+      {/* <Logo src="/assets/logo.png" className="w-44" /> */}
 
       <div className="flex items-center gap-3">
         <SearchBar />

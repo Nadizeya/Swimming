@@ -14,9 +14,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
-import Icon from "@/components/Icon";
+import Icon from "@/shared/Icon";
 import { Link, useLocation } from "react-router-dom";
+import Logo from "@/shared/logo";
 
 // Menu items.
 const items = [
@@ -58,6 +60,9 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
+        <SidebarHeader>
+          <Logo src="/assets/logo.png" className="w-44" />
+        </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -67,7 +72,7 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem
                     key={item.title}
-                    className={isActive ? "bg-swimigo-blue " : ""}
+                    className={isActive ? "bg-swimigo-blue" : " "}
                   >
                     <SidebarMenuButton asChild>
                       <Link to={item.url} className="font-semibold">

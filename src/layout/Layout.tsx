@@ -9,7 +9,7 @@ const Layout = () => {
       <Header />
       <SidebarProvider>
         <AppSidebar />
-        <main className="p-4">
+        <main className="w-full overflow-x-auto p-4">
           <Outlet />
         </main>
       </SidebarProvider>

@@ -15,74 +15,96 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  ArrowDown,
-  ArrowUp,
-  Eye,
-  MoreVertical,
-  Pencil,
-  Trash,
-} from "lucide-react";
+import { Eye, MoreVertical, Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { Coach } from "@/features/coaches/coachType";
 import { dummyCoaches } from "@/features/coaches/coachData";
 import CoachAction from "./components/CoachAction";
+import { useNavigate } from "react-router-dom";
+
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 const SortableHeader = (column: any, label: string) => (
   <button
     onClick={() => column.toggleSorting()}
-    className="flex items-center gap-1"
+    className="flex items-center gap-1 font-semibold w-full"
   >
-    {label}
-    {column.getIsSorted() === "asc" ? (
-      <ArrowUp />
-    ) : column.getIsSorted() === "desc" ? (
-      <ArrowDown />
-    ) : (
-      ""
-    )}
+    <span>{label}</span>
+    <div className="flex flex-col items-center -space-y-[7px]">
+      <ChevronUp
+        className={`w-2 h-3 ${
+          column.getIsSorted() === "asc" ? "text-black" : "text-[#ABABAB]"
+        }`}
+      />
+      <ChevronDown
+        className={`w-2 h-3 ${
+          column.getIsSorted() === "desc" ? "text-black" : "text-[#ABABAB]"
+        }`}
+      />
+    </div>
   </button>
 );
 
 export default function CoachList() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
+  const navigate = useNavigate();
 
   const columns: ColumnDef<Coach>[] = [
-    { accessorKey: "fullName", header: "Full Name" },
+    {
+      accessorKey: "fullName",
+      header: ({ column }) => SortableHeader(column, "FULL NAME"),
+    },
     {
       accessorKey: "position",
-      header: ({ column }) => SortableHeader(column, "Position"),
+      header: ({ column }) => SortableHeader(column, "POSITION "),
     },
     {
       accessorKey: "sex",
-      header: ({ column }) => SortableHeader(column, "Sex"),
+      header: ({ column }) => SortableHeader(column, "SEX"),
+      cell: ({ row }) => {
+        const sex = row.original.sex;
+        const color =
+          sex === "Male"
+            ? " text-blue-700 font-semibold tracking-wider"
+            : sex === "Female"
+            ? "text-pink-700 font-semibold tracking-wider"
+            : " text-gray-700";
+
+        return <p className={`${color}`}>{sex}</p>;
+      },
     },
+
     {
       accessorKey: "photo",
-      header: "Photo",
+      header: "PHOTO",
       cell: ({ row }) => {
         const photo = row.original.photo;
+
         return photo ? (
-          <Button
-            variant="link"
-            className="p-0 text-blue-600"
-            onClick={() => setPhotoUrl(photo)}
-          >
-            View
-          </Button>
+          <img
+            src={photo}
+            alt="Profile"
+            className="w-14 h-14 lg:w-24 lg:h-24 border-swimigo-grey border rounded-lg shadow-md object-cover"
+          />
         ) : (
           <span className="text-gray-400">None</span>
         );
       },
     },
-    { accessorKey: "email", header: "E-mail" },
-    { accessorKey: "phone", header: "Contact Number" },
+    {
+      accessorKey: "email",
+      header: ({ column }) => SortableHeader(column, "E-MAIL"),
+    },
+    {
+      accessorKey: "phone",
+      header: ({ column }) => SortableHeader(column, "CONTACT NUMBER"),
+    },
     {
       accessorKey: "status",
-      header: "Status",
+      header: ({ column }) => SortableHeader(column, "STATUS"),
       cell: ({ row }) => {
         const status = row.original.status;
         const color = {
@@ -96,7 +118,7 @@ export default function CoachList() {
     },
     {
       id: "actions",
-      header: "Action",
+      header: "ACTION",
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -107,24 +129,30 @@ export default function CoachList() {
           <DropdownMenuContent
             align="end"
             side="bottom"
-            className="bg-[#ABABAB]"
+            className="bg-[#D3D3D3] rounded-xl py-2 px-0 min-w-[140px] shadow-md border-none"
+            sideOffset={1}
           >
             <DropdownMenuItem
-              onClick={() => alert("View " + row.original.fullName)}
+              onClick={() => navigate(`/coaches/view/${row.id}`)}
+              className="flex items-center gap-2 px-4  uppercase text-black text-sm hover:bg-gray-300 cursor-pointer"
             >
-              <Eye />
+              <Eye className="w-4 h-4" />
               View
             </DropdownMenuItem>
+            <div className="h-px w-full bg-gray-400  my-1" />
             <DropdownMenuItem
               onClick={() => alert("Edit " + row.original.fullName)}
+              className="flex items-center gap-2 px-4  uppercase text-black text-sm hover:bg-gray-300 cursor-pointer"
             >
-              <Pencil />
+              <Pencil className="w-4 h-4" />
               Edit
             </DropdownMenuItem>
+            <div className="h-px w-full bg-gray-400  my-1" />
             <DropdownMenuItem
               onClick={() => alert("Delete " + row.original.fullName)}
+              className="flex items-center gap-2 px-4  uppercase text-black text-sm hover:bg-gray-300 cursor-pointer"
             >
-              <Trash />
+              <Trash className="w-4 h-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -145,39 +173,47 @@ export default function CoachList() {
   });
 
   return (
-    <>
-      <div className="overflow-x-auto  rounded-xl border bg-white p-4 shadow">
+    <div>
+      <div className="w-full rounded-xl  bg-white p-4 shadow">
         <CoachAction />
-        <table className="min-w-full table-auto text-sm text-left">
-          <thead className="bg-gray-100">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th
-                    key={header.id}
-                    className="px-4 py-2 font-semibold text-gray-700"
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-muted/50  transition">
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="px-4 py-2 border-t">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full text-sm text-left">
+            <thead className="bg-gray-200">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-4 py-2 font-semibold text-xs text-swimigo-grey"
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row) => (
+                <tr key={row.id} className="hover:bg-muted/50  transition">
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="px-4 py-2 border-t border-[#ABABAB]"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <Dialog open={!!photoUrl} onOpenChange={() => setPhotoUrl(null)}>
@@ -189,6 +225,6 @@ export default function CoachList() {
           />
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

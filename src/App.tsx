@@ -3,7 +3,7 @@ import { authenticationRoutes, protectedRoutes } from "@/routes/routes.config";
 import NotFound from "@/pages/NotFound";
 import { Suspense } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import MainLoading from "./components/MainLoading";
+import MainLoading from "./shared/MainLoading";
 import Layout from "./layout/Layout";
 
 // Functions to handle private routes

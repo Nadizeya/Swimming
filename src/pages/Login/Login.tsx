@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Logo from "@/components/logo";
+import Logo from "@/shared/logo";
 
 const loginSchema = z.object({
   email: z
