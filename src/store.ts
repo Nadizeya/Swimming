@@ -3,10 +3,11 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { baseApi } from "./services/baseApi";
 import userReducer from "./features/user/userSlice";
 
+// ✅ Only include baseApi
 export const store = configureStore({
   reducer: {
+    user: userReducer,
     [baseApi.reducerPath]: baseApi.reducer,
-    user: userReducer, // <- Add slice here
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

@@ -31,11 +31,7 @@ const AppRoutes = () => {
       children: [...authenticationRoutes],
     },
     {
-      element: (
-        <Suspense fallback={<MainLoading />}>
-          <ProtectedRoute />
-        </Suspense>
-      ),
+      element: <ProtectedRoute />,
       children: [
         {
           element: <Layout />,
@@ -43,6 +39,7 @@ const AppRoutes = () => {
         },
       ],
     },
+
     {
       path: "*",
       element: <NotFound />,

@@ -39,7 +39,7 @@ const items = [
   },
   {
     title: "Lessons",
-    url: "#",
+    url: "/lessons",
     icon: <Icon src={lessons} />,
   },
   {

@@ -11,4 +11,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      "/api": {
+        target: "https://dev-142743770371.asia-southeast1.run.app",
+        changeOrigin: true,
+      },
+    },
+  },
 });

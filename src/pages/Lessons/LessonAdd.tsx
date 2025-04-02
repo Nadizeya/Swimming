@@ -5,7 +5,6 @@ const CoachAdd = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleSubmit = (data: CoachFormValues) => {
-    console.log(data, "data");
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, value);

@@ -13,6 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Logo from "@/shared/logo";
+import { useLoginMutation } from "@/features/auth/authApi";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
   email: z
@@ -28,13 +30,26 @@ const Login = () => {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "tester@swimigo.com",
+      password: "kpzo24EUD8INNRFT",
     },
   });
+  const navigate = useNavigate();
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Logging in with:", data);
+  const [login, { isLoading, error }] = useLoginMutation();
+
+  const onSubmit = async (values: LoginFormData) => {
+    try {
+      const res = await login(values).unwrap();
+      localStorage.setItem("accessToken", res.data.token);
+      navigate("/");
+    } catch (err: any) {
+      const message =
+        err?.data?.error?.message || "Login failed. Please try again.";
+
+      form.setError("email", { message });
+      form.setError("password", { message });
+    }
   };
 
   return (
@@ -58,12 +73,12 @@ const Login = () => {
                   <FormItem className="relative">
                     <FormLabel
                       className="absolute left-3 top-1 text-xs text-swimigo-blue transition-all 
-                      peer-placeholder-shown:top-3.5 
-                      peer-placeholder-shown:text-sm 
-                      peer-placeholder-shown:text-gray-400 
-                      peer-focus:top-1 
-                      peer-focus:text-xs 
-                      peer-focus:text-swimigo-blue"
+                    peer-placeholder-shown:top-3.5 
+                    peer-placeholder-shown:text-sm 
+                    peer-placeholder-shown:text-gray-400 
+                    peer-focus:top-1 
+                    peer-focus:text-xs 
+                    peer-focus:text-swimigo-blue"
                     >
                       E-MAIL
                     </FormLabel>
@@ -82,7 +97,6 @@ const Login = () => {
                 )}
               />
 
-              {/* Password Field */}
               <FormField
                 control={form.control}
                 name="password"
@@ -98,12 +112,11 @@ const Login = () => {
                     </FormControl>
                     <div className="min-h-[16px] mt-1">
                       <FormMessage />
-                    </div>{" "}
+                    </div>
                   </FormItem>
                 )}
               />
 
-              {/* Remember Me */}
               <div className="flex items-center space-x-2">
                 <input type="checkbox" id="remember" className="w-4 h-4" />
                 <label htmlFor="remember" className="text-sm">
@@ -111,7 +124,6 @@ const Login = () => {
                 </label>
               </div>
 
-              {/* Submit */}
               <div className="mt-6">
                 <Button
                   type="submit"
@@ -128,8 +140,6 @@ const Login = () => {
               </div>
             </form>
           </Form>
-
-          {/* Forgot Password */}
         </CardContent>
       </Card>
     </div>
